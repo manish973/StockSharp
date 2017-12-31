@@ -27,7 +27,7 @@ namespace StockSharp.BusinessEntities
 	/// <summary>
 	/// The main interface providing the connection to the trading systems.
 	/// </summary>
-	public interface IConnector : IPersistable, ILogReceiver, IMarketDataProvider, ISecurityProvider, INewsProvider, IPortfolioProvider
+	public interface IConnector : IPersistable, ILogReceiver, IMarketDataProvider, ISecurityProvider, INewsProvider, IPortfolioProvider, IPositionProvider
 	{
 		/// <summary>
 		/// Own trade received.
@@ -169,30 +169,30 @@ namespace StockSharp.BusinessEntities
 		/// </summary>
 		event Action<IEnumerable<Portfolio>> NewPortfolios;
 
-		/// <summary>
-		/// Portfolio changed.
-		/// </summary>
-		event Action<Portfolio> PortfolioChanged;
+		///// <summary>
+		///// Portfolio changed.
+		///// </summary>
+		//event Action<Portfolio> PortfolioChanged;
 
 		/// <summary>
 		/// Portfolios changed.
 		/// </summary>
 		event Action<IEnumerable<Portfolio>> PortfoliosChanged;
 
-		/// <summary>
-		/// Position received.
-		/// </summary>
-		event Action<Position> NewPosition;
+		///// <summary>
+		///// Position received.
+		///// </summary>
+		//event Action<Position> NewPosition;
 
 		/// <summary>
 		/// Positions received.
 		/// </summary>
 		event Action<IEnumerable<Position>> NewPositions;
 
-		/// <summary>
-		/// Position changed.
-		/// </summary>
-		event Action<Position> PositionChanged;
+		///// <summary>
+		///// Position changed.
+		///// </summary>
+		//event Action<Position> PositionChanged;
 
 		/// <summary>
 		/// Positions changed.
@@ -371,10 +371,10 @@ namespace StockSharp.BusinessEntities
 		/// </summary>
 		IEnumerable<MyTrade> MyTrades { get; }
 
-		/// <summary>
-		/// Get all positions.
-		/// </summary>
-		IEnumerable<Position> Positions { get; }
+		///// <summary>
+		///// Get all positions.
+		///// </summary>
+		//IEnumerable<Position> Positions { get; }
 
 		/// <summary>
 		/// All news.
@@ -460,6 +460,20 @@ namespace StockSharp.BusinessEntities
 		/// </summary>
 		/// <param name="criteria">The portfolio which fields will be used as a filter.</param>
 		void LookupPortfolios(Portfolio criteria);
+
+		/// <summary>
+		/// Lookup security by identifier.
+		/// </summary>
+		/// <param name="securityId">Security ID.</param>
+		/// <returns>Security.</returns>
+		Security LookupSecurity(SecurityId securityId);
+
+		/// <summary>
+		/// To get the portfolio by the name. If the portfolio is not registered, it will be created.
+		/// </summary>
+		/// <param name="name">Portfolio name.</param>
+		/// <returns>Portfolio.</returns>
+		Portfolio GetPortfolio(string name);
 
 		/// <summary>
 		/// To get the position by portfolio and instrument.
@@ -613,5 +627,17 @@ namespace StockSharp.BusinessEntities
 		/// Unsubscribe from news.
 		/// </summary>
 		void UnRegisterNews();
+
+		/// <summary>
+		/// Send outgoing message.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		void SendOutMessage(Message message);
+
+		/// <summary>
+		/// Send message.
+		/// </summary>
+		/// <param name="message">Message.</param>
+		void SendInMessage(Message message);
 	}
 }

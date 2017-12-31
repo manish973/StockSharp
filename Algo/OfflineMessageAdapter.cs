@@ -64,8 +64,8 @@
 					message.IsBack = false;
 				}
 
-				base.SendInMessage(message);
-				return;
+				//base.SendInMessage(message);
+				//return;
 			}
 
 			switch (message.Type)
@@ -81,11 +81,11 @@
 						_pfSubscriptions.Clear();
 					}
 
-					base.SendInMessage(message);
 					break;
 				}
 				case MessageTypes.Connect:
 				case MessageTypes.Disconnect:
+				case ExtendedMessageTypes.Reconnect:
 					break;
 				case MessageTypes.Time:
 				{

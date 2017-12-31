@@ -85,7 +85,7 @@ namespace StockSharp.Algo.Positions
 				{
 					_byOrderPositions.Clear();
 
-                    _positions.Clear();
+					_positions.Clear();
 					_positions.AddRange(value);
 
 					UpdatePositionValue(value);
@@ -154,9 +154,9 @@ namespace StockSharp.Algo.Positions
 
 						lock (_positions.SyncRoot)
 						{
-							isNew = _positions.TryGetValue(key, out decimal prev);
+							isNew = !_positions.TryGetValue(key, out var prev);
 
-							if (_byOrderPositions.TryGetValue(orderId, out Tuple<Sides, decimal> oldPosition))
+							if (_byOrderPositions.TryGetValue(orderId, out var oldPosition))
 							{
 								if (newPosition.Value != oldPosition.Item2)
 									_byOrderPositions[orderId] = Tuple.Create(execMsg.Side, newPosition.Value);
@@ -197,7 +197,7 @@ namespace StockSharp.Algo.Positions
 
 						lock (_positions.SyncRoot)
 						{
-							isNew = _positions.TryGetValue(key, out var prev);
+							isNew = !_positions.TryGetValue(key, out var prev);
 							abs = prev + diff.Value;
 
 							_positions[key] = abs;

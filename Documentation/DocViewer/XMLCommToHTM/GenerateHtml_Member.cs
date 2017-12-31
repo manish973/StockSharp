@@ -96,9 +96,8 @@ namespace XMLCommToHTM
 
 		static string GetMethodKindName(MemberDom m)
 		{
-			if (m is MethodDom)
+			if (m is MethodDom meth)
 			{
-				var meth = m as MethodDom;
 				if (meth.IsOperator)
 					return Strings.Operator;
 				else
@@ -118,8 +117,7 @@ namespace XMLCommToHTM
 
 		static XElement BuildReturns(MemberDom m)
 		{
-			var meth= m as MethodDom;
-			if (meth == null)
+			if (!(m is MethodDom meth))
 				return BuildMemberType(m);
 			if (meth.MemberType==null || meth.MemberType == typeof(void))
 				return null;

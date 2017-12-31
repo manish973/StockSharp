@@ -122,15 +122,13 @@
             Logger address.
             </summary>
         </member>
-        <member name="P:StockSharp.Rithmic.RithmicMessageAdapter.IsValid">
+        <member name="P:StockSharp.Rithmic.RithmicMessageAdapter.AllTimeFrames">
             <summary>
-            The parameters validity check.
+            Possible time-frames.
             </summary>
         </member>
         <member name="P:StockSharp.Rithmic.RithmicMessageAdapter.TimeFrames">
-            <summary>
-            Available time frames.
-            </summary>
+            <inheritdoc />
         </member>
         <member name="M:StockSharp.Rithmic.RithmicMessageAdapter.Load(Ecng.Serialization.SettingsStorage)">
             <summary>

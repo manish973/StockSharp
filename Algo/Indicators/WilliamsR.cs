@@ -30,6 +30,7 @@ namespace StockSharp.Algo.Indicators
 	/// </remarks>
 	[DisplayName("%R")]
 	[DescriptionLoc(LocalizedStrings.Str854Key)]
+	[IndicatorIn(typeof(CandleIndicatorValue))]
 	public class WilliamsR : LengthIndicator<decimal>
 	{
 		// Текущее значение минимума

@@ -91,7 +91,7 @@ namespace StockSharp.Algo.Import
 			set
 			{
 				if (value < 0)
-					throw new ArgumentOutOfRangeException(nameof(value));
+					throw new ArgumentOutOfRangeException(nameof(value), value, LocalizedStrings.Str1219);
 
 				_skipFromHeader = value;
 			}
@@ -165,9 +165,7 @@ namespace StockSharp.Algo.Import
 						}
 					}
 
-					var secMsg = instance as SecurityMessage;
-
-					if (secMsg == null)
+					if (!(instance is SecurityMessage secMsg))
 					{
 						if (instance is ExecutionMessage execMsg)
 							execMsg.ExecutionType = (ExecutionTypes)DataType.Arg;

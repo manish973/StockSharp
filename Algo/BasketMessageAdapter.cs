@@ -251,6 +251,12 @@ namespace StockSharp.Algo
 		/// </summary>
 		public bool IsRestorSubscriptioneOnReconnect { get; set; }
 
+		/// <inheritdoc />
+		public override IEnumerable<TimeSpan> TimeFrames
+		{
+			get { return GetSortedAdapters().SelectMany(a => a.TimeFrames); }
+		}
+
 		/// <summary>
 		/// Create condition for order type <see cref="OrderTypes.Conditional"/>, that supports the adapter.
 		/// </summary>
@@ -638,20 +644,22 @@ namespace StockSharp.Algo
 
 		private static IMessageAdapter GetUnderlyingAdapter(IMessageAdapter adapter)
 		{
-			var wrapper = adapter as IMessageAdapterWrapper;
-			return wrapper != null ? GetUnderlyingAdapter(wrapper.InnerAdapter) : adapter;
+			return adapter is IMessageAdapterWrapper wrapper ? GetUnderlyingAdapter(wrapper.InnerAdapter) : adapter;
 		}
 
 		private void ProcessConnectMessage(IMessageAdapter innerAdapter, ConnectMessage message)
 		{
 			var underlyingAdapter = GetUnderlyingAdapter(innerAdapter);
+			var heartbeatAdapter = _hearbeatAdapters[underlyingAdapter];
 
 			if (message.Error != null)
+			{
 				this.AddErrorLog(LocalizedStrings.Str625Params, underlyingAdapter.GetType().Name, message.Error);
+
+				_connectedAdapters.Remove(heartbeatAdapter);
+			}
 			else
 			{
-				var heartbeatAdapter = _hearbeatAdapters[underlyingAdapter];
-
 				foreach (var supportedMessage in innerAdapter.SupportedMessages)
 				{
 					_messageTypeAdapters.SafeAdd(supportedMessage).Add(heartbeatAdapter);

@@ -41,7 +41,7 @@ namespace SampleQuik
 		{
 			InitializeComponent();
 
-			CandlesPeriods.ItemsSource = LuaFixMarketDataMessageAdapter.TimeFrames;
+			CandlesPeriods.ItemsSource = LuaFixMarketDataMessageAdapter.AllTimeFrames;
 			CandlesPeriods.SelectedIndex = 1;
 		}
 
@@ -143,8 +143,8 @@ namespace SampleQuik
 					//{
 					//	SecurityId = new SecurityId
 					//	{
-					//		SecurityCode = "ALL",
-					//		BoardCode = "ALL"
+					//		SecurityCode = MessageAdapter.DefaultAssociatedBoardCode,
+					//		BoardCode = MessageAdapter.DefaultAssociatedBoardCode
 					//	},
 					//	IsSubscribe = true,
 					//	DataType = MarketDataTypes.MarketDepth,

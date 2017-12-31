@@ -15,9 +15,9 @@
             </summary>
       <param name="transactionIdGenerator">Генератор идентификаторов транзакций.</param>
     </member>
-    <member name="P:StockSharp.Quik.Lua.LuaFixMarketDataMessageAdapter.TimeFrames">
+    <member name="P:StockSharp.Quik.Lua.LuaFixMarketDataMessageAdapter.AllTimeFrames">
       <summary>
-            Available time frames.
+            Possible time-frames.
             </summary>
     </member>
     <member name="M:StockSharp.Quik.Lua.LuaFixMarketDataMessageAdapter.CreateOrderCondition">
@@ -91,6 +91,11 @@
             Игнорировать дубликаты по транзакциям.
             </summary>
     </member>
+    <member name="P:StockSharp.Quik.Lua.LuaFixServer.AutoFixFutureCodes">
+      <summary>
+            Автоматически править коды фьючерсов для Si и Eu.
+            </summary>
+    </member>
     <member name="P:StockSharp.Quik.Lua.LuaFixServer.LogFile">
       <summary>
             Название текстового файла, в который будут писаться логи.
@@ -135,11 +140,22 @@
             </summary>
       <param name="message">Сообщение.</param>
     </member>
+    <member name="P:StockSharp.Quik.Lua.LuaFixServer.SecurityClassInfo">
+      <summary>
+            Описание классов инструментов, в зависимости от которых будут проставляться параметры в <see cref="P:StockSharp.Messages.SecurityMessage.SecurityType" /> и <see cref="P:StockSharp.Messages.SecurityId.BoardCode" />.
+            </summary>
+    </member>
     <member name="M:StockSharp.Quik.Lua.LuaFixServer.GetNextRequest">
       <summary>
             Получить пользовательский запрос.
             </summary>
       <returns>Пользовательский запрос.</returns>
+    </member>
+    <member name="M:StockSharp.Quik.Lua.LuaFixServer.AddRequest(StockSharp.Quik.Lua.LuaRequest)">
+      <summary>
+            Добавить пользовательский запрос.
+            </summary>
+      <param name="request">Пользовательский запрос.</param>
     </member>
     <member name="M:StockSharp.Quik.Lua.LuaFixServer.GetNextTransactionId">
       <summary>
@@ -154,6 +170,14 @@
       <param name="transactionId">Номер транзакции.</param>
       <returns>
         <see langword="true" />, если транзакция не была ранее обработана и ее можно обработать, иначе <see langword="false" />.</returns>
+    </member>
+    <member name="M:StockSharp.Quik.Lua.LuaFixServer.GetLastCandle(StockSharp.Messages.SecurityId,System.TimeSpan)">
+      <summary>
+            Получить последнюю отправленную свечу.
+            </summary>
+      <param name="securityId">Идентификатор инструмента.</param>
+      <param name="timeFrame">Тайм-фрейм.</param>
+      <returns>Последняя отправленная свеча.</returns>
     </member>
     <member name="T:StockSharp.Quik.Lua.LuaFixTransactionMessageAdapter">
       <summary>
@@ -2440,11 +2464,6 @@
             Значение по умолчанию <see langword="false" />.
             </remarks>
     </member>
-    <member name="P:StockSharp.Quik.QuikDdeAdapter.IsValid">
-      <summary>
-            Проверить введенные параметры на валидность.
-            </summary>
-    </member>
     <member name="P:StockSharp.Quik.QuikDdeAdapter.Tables">
       <summary>
             Таблицы, для которых будет запущен экспорт данных.
@@ -3300,11 +3319,6 @@
     <member name="P:StockSharp.Quik.QuikTrans2QuikAdapter.SingleSlash">
       <summary>
             https://forum.quik.ru/forum10/topic1218/
-            </summary>
-    </member>
-    <member name="P:StockSharp.Quik.QuikTrans2QuikAdapter.IsValid">
-      <summary>
-            Проверить введенные параметры на валидность.
             </summary>
     </member>
     <member name="M:StockSharp.Quik.QuikTrans2QuikAdapter.CreateOrderCondition">

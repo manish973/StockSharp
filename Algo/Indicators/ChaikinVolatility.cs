@@ -30,6 +30,7 @@ namespace StockSharp.Algo.Indicators
 	/// </remarks>
 	[DisplayName("Chaikin's Volatility")]
 	[DescriptionLoc(LocalizedStrings.Str730Key)]
+	[IndicatorIn(typeof(CandleIndicatorValue))]
 	public class ChaikinVolatility : BaseIndicator
 	{
 		/// <summary>
@@ -79,7 +80,7 @@ namespace StockSharp.Algo.Indicators
 				return Roc.Process(emaValue);
 			}
 
-			return input;				
+			return input;
 		}
 
 		/// <summary>

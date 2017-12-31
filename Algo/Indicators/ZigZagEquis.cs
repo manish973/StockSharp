@@ -32,6 +32,8 @@ namespace StockSharp.Algo.Indicators
 	/// </remarks>
 	[DisplayName("ZigZag Metastock")]
 	[DescriptionLoc(LocalizedStrings.Str826Key)]
+	[IndicatorIn(typeof(CandleIndicatorValue))]
+	[IndicatorOut(typeof(ShiftedIndicatorValue))]
 	public class ZigZagEquis : BaseIndicator
 	{
 		private readonly IList<decimal> _buffer = new List<decimal>();
@@ -106,10 +108,6 @@ namespace StockSharp.Algo.Indicators
 			CurrentValue = 0;
 			base.Reset();
 		}
-
-		/// <inheritdoc />
-		[Browsable(false)]
-		public override Type ResultType { get; } = typeof(ShiftedIndicatorValue);
 
 		/// <summary>
 		/// To handle the input value.

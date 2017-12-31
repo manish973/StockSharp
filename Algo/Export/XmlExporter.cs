@@ -342,8 +342,17 @@ namespace StockSharp.Algo.Export
 				if (!security.BinaryOptionType.IsEmpty())
 					writer.WriteAttribute("binaryOptionType", security.BinaryOptionType);
 
+				if (security.IssueSize != null)
+					writer.WriteAttribute("issueSize", security.IssueSize.Value);
+
+				if (security.IssueDate != null)
+					writer.WriteAttribute("issueDate", security.IssueDate.Value);
+
 				if (!security.UnderlyingSecurityCode.IsEmpty())
 					writer.WriteAttribute("underlyingSecurityCode", security.UnderlyingSecurityCode);
+
+				if (security.UnderlyingSecurityType != null)
+					writer.WriteAttribute("underlyingSecurityType", security.UnderlyingSecurityType);
 
 				if (security.ExpiryDate != null)
 					writer.WriteAttribute("expiryDate", security.ExpiryDate.Value.ToString("yyyy-MM-dd"));

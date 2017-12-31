@@ -126,7 +126,7 @@ namespace StockSharp.Algo
 
 			_subscriptionManager = new SubscriptionManager(this);
 
-			UpdateSecurityLastQuotes = UpdateSecurityByLevel1 = true;
+			UpdateSecurityLastQuotes = UpdateSecurityByLevel1 = UpdateSecurityByDefinition = true;
 
 			CreateDepthFromLevel1 = true;
 			SupportFilteredMarketDepth = true;
@@ -407,6 +407,11 @@ namespace StockSharp.Algo
 		public bool UpdateSecurityByLevel1 { get; set; }
 
 		/// <summary>
+		/// To update <see cref="Security"/> fields when the <see cref="SecurityMessage"/> message appears. By default is enabled.
+		/// </summary>
+		public bool UpdateSecurityByDefinition { get; set; }
+
+		/// <summary>
 		/// To update the order book for the instrument when the <see cref="Level1ChangeMessage"/> message appears. By default is enabled.
 		/// </summary>
 		[DisplayNameLoc(LocalizedStrings.Str200Key)]
@@ -508,6 +513,9 @@ namespace StockSharp.Algo
 		/// </summary>
 		protected virtual void OnConnect()
 		{
+			if (TimeChange)
+				CreateTimer();
+
 			SendInMessage(new ConnectMessage());
 		}
 
@@ -662,7 +670,7 @@ namespace StockSharp.Algo
 			if (security == null)
 				throw new ArgumentNullException(nameof(security));
 
-			var position = _entityCache.TryAddPosition(portfolio, security, clientCode, depoName, limitType, description, out bool isNew);
+			var position = _entityCache.TryAddPosition(portfolio, security, clientCode, depoName, limitType, description, out var isNew);
 
 			if (isNew)
 				RaiseNewPosition(position);
@@ -1194,7 +1202,11 @@ namespace StockSharp.Algo
 
 		private void ProcessTimeInterval(Message message)
 		{
-			_timeAdapter?.HandleTimeMessage(message);
+			if (message == _marketTimeMessage)
+			{
+				lock (_marketTimerSync)
+					_isMarketTimeHandled = true;	
+			}
 
 			// output messages from adapters goes non ordered
 			if (_currentTime > message.LocalTime)
@@ -1245,7 +1257,7 @@ namespace StockSharp.Algo
 			{
 				var idInfo = SecurityIdGenerator.Split(idStr);
 				return Tuple.Create(idInfo.SecurityCode, _entityCache.ExchangeInfoProvider.GetOrCreateBoard(GetBoardCode(idInfo.BoardCode)));
-			}, out bool isNew);
+			}, out var isNew);
 
 			var isChanged = changeSecurity(security);
 
@@ -1372,6 +1384,8 @@ namespace StockSharp.Algo
 
 			SendInMessage(new ResetMessage());
 
+			CloseTimer();
+
 			_cleared?.Invoke();
 		}
 
@@ -1405,6 +1419,8 @@ namespace StockSharp.Algo
 			//	MarketDataAdapter = null;
 
 			SendInMessage(_disposeMessage);
+
+			CloseTimer();
 		}
 
 		/// <summary>
@@ -1420,6 +1436,7 @@ namespace StockSharp.Algo
 			OrdersKeepCount = storage.GetValue(nameof(OrdersKeepCount), OrdersKeepCount);
 			UpdateSecurityLastQuotes = storage.GetValue(nameof(UpdateSecurityLastQuotes), true);
 			UpdateSecurityByLevel1 = storage.GetValue(nameof(UpdateSecurityByLevel1), true);
+			UpdateSecurityByDefinition = storage.GetValue(nameof(UpdateSecurityByDefinition), true);
 			ReConnectionSettings.Load(storage.GetValue<SettingsStorage>(nameof(ReConnectionSettings)));
 
 			if (storage.ContainsKey(nameof(LatencyManager)))
@@ -1448,6 +1465,9 @@ namespace StockSharp.Algo
 			MarketTimeChangedInterval = storage.GetValue<TimeSpan>(nameof(MarketTimeChangedInterval));
 			CreateAssociatedSecurity = storage.GetValue(nameof(CreateAssociatedSecurity), CreateAssociatedSecurity);
 
+			LookupMessagesOnConnect = storage.GetValue(nameof(LookupMessagesOnConnect), LookupMessagesOnConnect);
+			AutoPortfoliosSubscribe = storage.GetValue(nameof(AutoPortfoliosSubscribe), AutoPortfoliosSubscribe);
+
 			base.Load(storage);
 		}
 
@@ -1464,6 +1484,7 @@ namespace StockSharp.Algo
 			storage.SetValue(nameof(OrdersKeepCount), OrdersKeepCount);
 			storage.SetValue(nameof(UpdateSecurityLastQuotes), UpdateSecurityLastQuotes);
 			storage.SetValue(nameof(UpdateSecurityByLevel1), UpdateSecurityByLevel1);
+			storage.SetValue(nameof(UpdateSecurityByDefinition), UpdateSecurityByDefinition);
 			storage.SetValue(nameof(ReConnectionSettings), ReConnectionSettings.Save());
 
 			if (LatencyManager != null)
@@ -1491,6 +1512,9 @@ namespace StockSharp.Algo
 			storage.SetValue(nameof(CreateAssociatedSecurity), CreateAssociatedSecurity);
 
 			storage.SetValue(nameof(IsRestorSubscriptioneOnReconnect), IsRestorSubscriptioneOnReconnect);
+
+			storage.SetValue(nameof(LookupMessagesOnConnect), LookupMessagesOnConnect);
+			storage.SetValue(nameof(AutoPortfoliosSubscribe), AutoPortfoliosSubscribe);
 
 			base.Save(storage);
 		}
